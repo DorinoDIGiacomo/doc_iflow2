@@ -1,0 +1,7 @@
+python-docx
+lxml
+networkx
+matplotlib
+pydantic
+google-genai
+Pillow
