@@ -201,8 +201,6 @@ The generated document contains:
 
 **Srivastav Cheekoti**
 
-SAP Integration Suite | Python Developer
-
 ---
 
 ## License
