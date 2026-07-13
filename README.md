@@ -1,4 +1,4 @@
-# SAP CPI Solution Design Document Generator
+# SAP CPI Interface Design Document Generator
 
 An AI-powered documentation generator for **SAP Integration Suite (Cloud Integration)** that automatically analyzes SAP CPI Integration Flow (iFlow) packages and generates professional Solution Design Documents in Microsoft Word format.
 
@@ -6,7 +6,7 @@ An AI-powered documentation generator for **SAP Integration Suite (Cloud Integra
 
 ## Overview
 
-Creating Solution Design Documents (SDDs) for SAP CPI interfaces is a repetitive and time-consuming task. This project automates the documentation process by parsing exported SAP CPI iFlow ZIP packages, analyzing their structure, and generating comprehensive technical documentation using Google's Gemini AI.
+Creating Interface Design Documents for SAP CPI interfaces is a repetitive and time-consuming task. This project automates the documentation process by parsing exported SAP CPI iFlow ZIP packages, analyzing their structure, and generating comprehensive technical documentation using Google's Gemini AI.
 
 The generated document follows a professional consulting-style format and includes interface details, architecture overview, process flow, security considerations, monitoring, business benefits, and more.
 
@@ -18,7 +18,7 @@ The generated document follows a professional consulting-style format and includ
 - Extract Interface Metadata
 - Parse BPMN Components and Integration Flow
 - Analyze Adapters, Connections, and Properties
-- AI-generated Solution Design Documentation using Gemini AI
+- AI-generated Interface Design Documentation using Gemini AI
 - Automatically Generate Process Flow Diagrams using Graphviz
 - Professional Microsoft Word Document Generation
 - Branded Cover Page
