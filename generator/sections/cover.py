@@ -44,20 +44,6 @@ def add_cover(document, interface):
     document.add_paragraph()
 
     # =====================================================
-    # Interface Name
-    # =====================================================
-
-    interface_name = document.add_paragraph()
-    interface_name.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
-
-    run = interface_name.add_run(interface.name)
-    run.bold = True
-    run.font.name = "Cambria"
-    run.font.size = Pt(16)
-
-    document.add_paragraph()
-
-    # =====================================================
     # Information Table
     # =====================================================
 
