@@ -1,208 +1,266 @@
 # SAP CPI Interface Design Document Generator
 
-An AI-powered documentation generator for **SAP Integration Suite (Cloud Integration)** that automatically analyzes SAP CPI Integration Flow (iFlow) packages and generates professional Solution Design Documents in Microsoft Word format.
+A Python-based automation tool that generates professional **SAP Integration Suite (SAP CPI) Interface Design Documents** from exported SAP CPI iFlow ZIP packages.
+
+The generator parses the iFlow artifacts, extracts technical metadata, analyzes the integration flow, and uses AI-assisted documentation generation to produce a structured Microsoft Word Solution Design Document.
 
 ---
 
-## Overview
+# Features
 
-Creating Interface Design Documents for SAP CPI interfaces is a repetitive and time-consuming task. This project automates the documentation process by parsing exported SAP CPI iFlow ZIP packages, analyzing their structure, and generating comprehensive technical documentation using Google's Gemini AI.
-
-The generated document follows a professional consulting-style format and includes interface details, architecture overview, process flow, security considerations, monitoring, business benefits, and more.
-
----
-
-## Features
+## Integration Package Parsing
 
 - Parse SAP CPI iFlow ZIP packages
-- Extract Interface Metadata
-- Parse BPMN Components and Integration Flow
-- Analyze Adapters, Connections, and Properties
-- AI-generated Interface Design Documentation using Gemini AI
-- Automatically Generate Process Flow Diagrams using Graphviz
-- Professional Microsoft Word Document Generation
-- Branded Cover Page
-- Interface Summary
-- Dynamic Page Numbering
-- Professional Headers & Footers
-- Clean Consultant-style Formatting
+- Extract integration artifacts
+- Read package metadata
+- Parse iFlow configuration files
 
----
+## BPMN Flow Analysis
 
-## Generated Documentation Includes
+- Analyze integration process flow
+- Identify processing steps
+- Detect routing and flow sequence
+- Capture Local Integration Processes
 
-- Cover Page
-- Interface Summary
-- Introduction
+## Technical Metadata Extraction
+
+Automatically extracts:
+
+- Package Name
+- Integration Flow Name
+- Artifact ID
+- Namespace
+- Runtime
+- Sender System(s)
+- Receiver System(s)
+- External Systems
+- Sender Adapter
+- Receiver Adapter
+- Communication Protocols
+- Authentication Methods
+- Endpoints
+- Message Formats
+
+## AI-assisted Documentation
+
+Generates professional descriptions for:
+
+- Interface Overview
 - Business Context
-- Business Challenges
-- Proposed Solution
-- Solution Architecture
-- End-to-End Integration Flow
-- Process Flow Diagram
-- Security Design
-- Monitoring & Error Handling
+- Functional Description
+- Technical Description
+- Integration Flow
+- Security
+- Error Handling
+- Dependencies
 - Business Benefits
-- Assumptions
-- Limitations
 - Recommendations
 - Conclusion
 
----
+## Professional Word Document Generation
 
-## Technology Stack
+Automatically creates:
 
-| Technology | Purpose |
-|------------|---------|
-| Python | Core Development |
-| SAP Integration Suite | Source iFlow Packages |
-| Google Gemini 2.5 Flash | AI Documentation Generation |
-| Graphviz | Process Flow Diagram Generation |
-| python-docx | Microsoft Word Document Generation |
-| lxml | XML Parsing |
-| Pydantic | Data Models |
-| Pillow | Image Processing |
+- Cover Page
+- Document Control
+- Table of Contents
+- Interface Summary
+- Technical Overview
+- Detailed Solution Design
+- Consistent Headers & Footers
+- Professional Formatting
 
 ---
 
-## Project Structure
+# Project Architecture
+
+```
+                 SAP CPI iFlow ZIP
+                         │
+                         ▼
+                 ZIP Package Reader
+                         │
+                         ▼
+             XML & BPMN Artifact Parser
+                         │
+                         ▼
+           Integration Metadata Extractor
+                         │
+                         ▼
+              Flow & Property Analyzer
+                         │
+                         ▼
+              AI Documentation Engine
+                         │
+                         ▼
+          Microsoft Word Document Generator
+                         │
+                         ▼
+          SAP CPI Interface Design Document
+```
+
+---
+
+# Project Structure
 
 ```
 SAP_CPI_Doc_Generator/
 │
 ├── ai/
+│   ├── document_context.py
+│   ├── generate_document.py
+│   └── llm.py
+│
 ├── analyzer/
+│
 ├── builder/
+│
 ├── generator/
 │   ├── sections/
-│   └── diagram_generator.py
+│   └── word_generator.py
+│
 ├── models/
+│
 ├── parser/
-├── utils/
+│
 ├── output/
+│
+├── tests/
+│
 ├── config.py
 ├── main.py
-└── requirements.txt
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## Installation
+# Generated Document Includes
 
-Clone the repository
+The generated Interface Design Document contains:
+
+- Cover Page
+- Document Control
+- Table of Contents
+- Executive Summary
+- Interface Overview
+- Business Context
+- Interface Summary
+- Functional Description
+- Technical Description
+- Integration Flow
+- Security Considerations
+- Error Handling
+- Dependencies
+- Business Benefits
+- Recommendations
+- Conclusion
+
+---
+
+# Technologies Used
+
+- Python
+- SAP Integration Suite (SAP CPI)
+- XML Parsing
+- BPMN Parsing
+- python-docx
+- Google Gemini API
+- Git
+- GitHub
+
+---
+
+# Sample Output
+
+The generated document includes:
+
+- Professional Cover Page
+- Automatically Generated Table of Contents
+- Interface Summary
+- AI-generated Technical Documentation
+- Structured Solution Design
+- Enterprise-style Word Formatting
+
+---
+
+# Current Limitations
+
+The current version focuses on generating high-quality textual Solution Design Documents.
+
+The following enhancements are planned for future releases:
+
+- Automated Solution Architecture Diagram generation
+- Rich graphical Integration Flow visualization
+- SAP icon-based architecture diagrams
+- Automatic component-level graphical representation
+
+Due to the current limitations of publicly available image generation APIs/models, enterprise-grade architecture diagrams cannot yet be generated reliably. This enhancement is planned for future versions.
+
+---
+
+# Future Roadmap (v2.0)
+
+Planned enhancements include:
+
+- Automated Solution Architecture Diagrams
+- Enhanced Integration Flow Visualization
+- Groovy Script Documentation
+- Message Mapping Documentation
+- XSD/WSDL Analysis
+- Integration Advisor Support
+- PDF Export
+- HTML Report Generation
+- Advanced SAP CPI Component Analysis
+
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/DarkKing-Lab/SAP_CPI_Doc_Generator.git
 ```
 
-Navigate to the project
-
-```bash
-cd SAP_CPI_Doc_Generator
-```
-
-Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Configuration
-
-Update your Gemini API Key inside `config.py`
-
-```python
-GEMINI_API_KEY = "YOUR_API_KEY"
-```
-
----
-
-## Usage
-
-Run the application
+Run the generator:
 
 ```bash
 python main.py
 ```
 
-Provide the exported SAP CPI iFlow ZIP package when prompted.
-
-The generated documentation will be available in:
-
-```
-output/
-```
-
 ---
 
-## Workflow
+# Requirements
 
-```
-SAP CPI ZIP
-      │
-      ▼
-Read ZIP Package
-      │
-      ▼
-Parse XML & BPMN
-      │
-      ▼
-Analyze Interface
-      │
-      ▼
-Generate JSON
-      │
-      ▼
-Generate Process Flow Diagram
-      │
-      ▼
-Generate AI Documentation
-      │
-      ▼
-Generate Microsoft Word Solution Design Document
-```
-
----
-
-## Sample Output
-
-The generated document contains:
-
-- Professional Cover Page
-- Interface Summary
-- AI-generated Technical Documentation
-- Process Flow Diagram
-- Consultant-style Formatting
-
----
-
-## Future Enhancements
-
-- AI-generated Process Flow Images
-- PDF Export
-- Web-based User Interface
-- Batch Processing of Multiple Interfaces
-- Custom Document Templates
-- Support for Additional SAP Integration Artifacts
-
----
-
-## Requirements
-
-- Python 3.11+
-- Graphviz
+- Python 3.10+
 - Google Gemini API Key
+- SAP CPI iFlow ZIP Package
 
 ---
 
-## Author
+# Version
+
+Current Release
+
+**v1.0**
+
+---
+
+# Author
 
 **Srivastav Cheekoti**
 
+SAP CPI Developer
+
 ---
 
-## License
+# License
 
-This project is intended for educational, learning, and demonstration purposes.
+This project is intended for educational, research, and internal automation purposes.
