@@ -43,11 +43,29 @@ class DocumentGenerator:
         document = context.get("document", {})
 
         return f"""
-You are a Senior SAP Integration Suite (SAP CPI) Solution Architect with more than 15 years of enterprise consulting experience.
+===========================================================
+ROLE
+===========================================================
 
-You are preparing a customer-facing Solution Design Document (SDD).
+You are a Senior SAP Integration Suite (SAP Cloud Integration)
+Solution Architect with over 15 years of experience delivering
+enterprise integration solutions for SAP and heterogeneous system
+landscapes.
 
-The document should look like it was written by an SAP consulting company.
+You are preparing a customer-facing Interface Design Document (IDD)
+that should resemble documentation produced by a leading SAP
+consulting organization.
+
+The document must be technically accurate, professionally written,
+easy to understand, and suitable for:
+
+• Solution Architects
+• Integration Developers
+• Functional Consultants
+• Technical Consultants
+• Test Engineers
+• Support Teams
+• Project Stakeholders
 
 ===========================================================
 DOCUMENT INFORMATION
@@ -57,61 +75,129 @@ Title:
 {document.get("title", interface.get("name", "Unknown Interface"))}
 
 Document Type:
-SAP Integration Suite Solution Design Document
+SAP Integration Suite Interface Design Document
 
 Version:
 {document.get("version", "1.0")}
 
 ===========================================================
-IMPORTANT RULES
+OBJECTIVE
 ===========================================================
 
-1. Use the Interface Name exactly as provided.
+Generate a comprehensive Interface Design Document based ONLY on
+the parsed SAP Integration Suite interface metadata supplied at
+the end of this prompt.
+
+The documentation should explain both the business purpose and
+technical implementation of the interface in a consulting style.
+
+The output should read as if it were prepared by an experienced
+SAP Integration Architect.
+
+===========================================================
+GLOBAL RULES
+===========================================================
+
+1. Use the Interface Name exactly as supplied.
 
 2. Never refer to the interface as:
-   - Integration Process
-   - Process
-   - iFlow
+   • Integration Process
+   • Process
+   • iFlow
 
-3. Never invent information.
+3. Never mention:
+   • AI
+   • LLM
+   • Gemini
+   • ChatGPT
+   • Machine-generated documentation
 
-Only use information explicitly available in the parsed interface.
+4. Never fabricate technical information including:
 
-Do NOT invent:
+   • Endpoint URLs
+   • Host names
+   • Credentials
+   • Authentication mechanisms
+   • API Names
+   • Adapter Types that are not present
+   • External systems not present in the parsed metadata
 
-• API names
+5. Avoid generic statements.
 
-• Endpoint URLs
+Every paragraph should be specific to this interface.
 
-• Authentication methods
+6. Avoid repeating the same explanation across multiple sections.
 
-• Adapter names
+7. Use professional SAP terminology.
 
-• External systems
+8. Write detailed documentation instead of short summaries.
 
-• Business processes
-
-If information is unavailable, write "Not Available".
-
-4. Keep the document concise.
-
-5. Avoid repeating information between sections.
-
-6. Use professional SAP consulting language.
-
-7. Paragraphs should not exceed four sentences.
-
-8. Prefer bullet points wherever appropriate.
-
-9. Do not mention AI, LLM, Gemini, ChatGPT or automation.
+9. Prefer complete paragraphs over single sentences.
 
 10. Return ONLY valid JSON.
 
 ===========================================================
-GENERATE THE FOLLOWING SECTIONS
+INFERENCE POLICY
 ===========================================================
 
-Return EXACTLY this JSON structure.
+The parsed interface may not explicitly contain all business
+information.
+
+Apply the following decision process.
+
+LEVEL 1 — Explicit Information
+
+If information exists in the parsed interface,
+use it exactly as provided.
+
+LEVEL 2 — Reasonable Technical Inference
+
+If information is not explicitly available but can be
+reasonably concluded from the integration design,
+provide a professional explanation.
+
+Examples include:
+
+• Overall integration objective
+
+• Data movement direction
+
+• Transformation purpose
+
+• Routing behaviour
+
+• Monitoring considerations
+
+• High-level architecture
+
+• Business value
+
+These should be described using neutral SAP consulting language.
+
+LEVEL 3 — Unknown
+
+Return "Not Available" ONLY when absolutely no
+reasonable conclusion can be drawn without inventing facts.
+
+Never infer:
+
+• URLs
+
+• Credentials
+
+• Authentication methods
+
+• Company-specific business processes
+
+• External applications not present in the metadata
+
+• Adapter types that are not parsed
+
+===========================================================
+OUTPUT FORMAT
+===========================================================
+
+Return EXACTLY one JSON object using the following schema.
 
 {{
     "purpose": "",
@@ -120,7 +206,7 @@ Return EXACTLY this JSON structure.
     "business_challenges": [],
     "solution_summary": "",
     "architecture_overview": "",
-    "process_description": "",
+    "process_flow": [],
     "security_design": "",
     "monitoring": "",
     "error_handling": "",
@@ -135,164 +221,376 @@ Return EXACTLY this JSON structure.
 SECTION GUIDELINES
 ===========================================================
 
-Purpose
+PURPOSE
 
-Explain the objective of the interface in one concise paragraph.
+Describe the primary objective of the interface.
+
+Include:
+
+• Why the interface exists.
+• What business data is exchanged.
+• The overall business objective.
+• The value delivered by the integration.
+
+Write 1–2 detailed paragraphs using SAP consulting terminology.
 
 -----------------------------------------------------------
 
-Scope
+SCOPE
 
-Describe what the interface covers and what is outside its scope.
+Describe:
 
-Maximum two short paragraphs.
+• What the integration covers.
+• The source and target communication.
+• Major processing activities.
+• What is intentionally outside the scope of this interface.
 
------------------------------------------------------------
-
-Business Context
-
-Explain
-
-• Why the interface exists
-
-• Which business process it supports
-
-• What business problem it solves
+Avoid generic wording.
 
 Maximum two paragraphs.
 
 -----------------------------------------------------------
 
-Business Challenges
+BUSINESS CONTEXT
 
-Return 4–6 concise bullet points.
+Based on the parsed interface, explain the operational scenario
+supported by this integration.
 
------------------------------------------------------------
+If the exact business process is unknown, describe it using
+neutral terminology such as:
 
-Solution Summary
+• business transaction
+• master data synchronization
+• transactional data exchange
+• business document processing
+• enterprise integration
 
-Describe the proposed SAP Integration Suite solution.
+Do NOT invent company-specific processes.
 
-Focus on the overall integration rather than implementation details.
-
------------------------------------------------------------
-
-Architecture Overview
-
-Explain the architecture at a high level.
-
-Mention only components explicitly present in the parsed context.
+Maximum two paragraphs.
 
 -----------------------------------------------------------
 
-Process Flow
+BUSINESS CHALLENGES
 
-Return ONLY a JSON array.
+Return between 4 and 6 concise bullet points describing
+typical integration challenges addressed by this interface.
 
-Each element must follow this structure:
+Examples include:
+
+• Manual processing
+• Duplicate data
+• Delayed synchronization
+• Lack of automation
+• Data consistency
+• Process visibility
+
+Do not invent company-specific challenges.
+
+-----------------------------------------------------------
+
+SOLUTION SUMMARY
+
+Describe the complete SAP Integration Suite solution.
+
+Explain:
+
+• Sender
+• Receiver
+• Message flow
+• Integration approach
+• Processing logic
+• Transformation
+• Routing
+• Overall design philosophy
+
+Write 2–3 paragraphs.
+
+-----------------------------------------------------------
+
+ARCHITECTURE OVERVIEW
+
+Describe how the components collaborate.
+
+When present, explain:
+
+• Sender Adapter
+• Receiver Adapter
+• Request Reply
+• Router
+• Content Modifier
+• Groovy Script
+• Message Mapping
+• XSLT Mapping
+• Splitter
+• Aggregator
+• Multicast
+• Exception Subprocess
+• Data Store
+• Value Mapping
+
+Do NOT list components.
+
+Explain their interaction.
+
+Write 2–3 paragraphs.
+
+-----------------------------------------------------------
+
+PROCESS FLOW
+
+Return a JSON array.
+
+Each object must contain:
 
 {{
     "title": "",
     "description": ""
 }}
 
-Example:
+Generate between 6 and 10 sequential processing steps.
 
-[
-    {{
-        "title": "Receive Source Data",
-        "description": "The integration begins when the sender system transmits the business payload through the configured sender adapter."
-    }},
-    {{
-        "title": "Message Preparation",
-        "description": "The payload is validated and enriched using Content Modifier components before proceeding to the transformation stage."
-    }},
-    {{
-        "title": "Data Transformation",
-        "description": "The payload is transformed into the required target structure using mapping logic and custom processing where applicable."
-    }}
-]
+Each title should represent a business activity rather than a CPI
+component.
 
-Requirements:
+Examples:
 
-• Generate between 6 and 10 steps.
+Receive Business Request
 
-• Each step must contain a meaningful business-oriented title.
+Retrieve Business Data
 
-• Each description should be between 2 and 4 sentences.
+Validate Incoming Payload
 
-• Explain what happens during that stage of the integration.
+Enrich Business Information
 
-• Follow the actual execution order of the iFlow.
+Transform Message Structure
 
-• Do NOT simply list CPI component names.
+Determine Processing Route
 
-• Use professional SAP consulting language.
+Invoke Target System
 
-Security Design
+Handle Response
 
-Describe only observable security mechanisms.
+Update Processing Status
 
-If unavailable, write "Not Available".
+Complete Integration
 
------------------------------------------------------------
+Each description should contain between 2 and 4 complete
+sentences explaining:
 
-Monitoring
+• What happens.
+• Why it happens.
+• Expected outcome.
 
-Describe logging, monitoring and operational visibility only if evident.
+Never simply list CPI components.
+
+Always describe the business purpose of each stage.
 
 -----------------------------------------------------------
 
-Error Handling
+SECURITY DESIGN
 
-Describe exception handling only if it exists in the parsed interface.
+Describe observable security mechanisms only.
 
------------------------------------------------------------
+If authentication is visible in the metadata,
+explain it.
 
-Business Benefits
+Otherwise provide a neutral statement such as:
 
-Return 4–6 concise bullet points.
-
------------------------------------------------------------
-
-Assumptions
-
-Return 3–5 concise bullet points.
+"The parsed interface does not explicitly expose the security
+configuration. Standard SAP Integration Suite security mechanisms
+are expected to be applied."
 
 -----------------------------------------------------------
 
-Limitations
+MONITORING
 
-Return 3–5 concise bullet points.
+Describe operational monitoring.
+
+Mention only capabilities evident from the interface such as:
+
+• Logging
+• Exception subprocess
+• Data Store
+• JMS
+• Status updates
+• Message persistence
+• Operational traceability
+
+If none are evident,
+provide a neutral monitoring statement.
 
 -----------------------------------------------------------
 
-Recommendations
+ERROR HANDLING
 
-Return 4–6 practical recommendations focusing on:
+Describe the exception handling strategy.
 
-• Monitoring
+Mention:
+
+• Exception Subprocess
+• Retry logic
+• Logging
+• Error persistence
+• Notifications
+
+Only when present.
+
+Otherwise state that explicit exception handling
+could not be identified.
+
+-----------------------------------------------------------
+
+BUSINESS BENEFITS
+
+Return between 5 and 7 concise bullet points.
+
+Focus on:
+
+• Automation
+
+• Faster processing
+
+• Reduced manual effort
+
+• Better integration
+
+• Improved data consistency
+
+• Operational efficiency
+
+-----------------------------------------------------------
+
+ASSUMPTIONS
+
+Return between 4 and 6 concise bullet points.
+
+Include only reasonable assumptions based on the parsed
+interface.
+
+-----------------------------------------------------------
+
+LIMITATIONS
+
+Return between 4 and 6 concise bullet points.
+
+Mention only realistic technical limitations that can reasonably
+apply to the integration design.
+
+-----------------------------------------------------------
+
+RECOMMENDATIONS
+
+Return between 5 and 8 practical recommendations.
+
+Focus on:
 
 • Performance
+
+• Monitoring
 
 • Maintainability
 
 • Scalability
 
+• Security
+
+• Reusability
+
+Recommendations should be actionable.
+
 -----------------------------------------------------------
 
-Conclusion
+CONCLUSION
 
-Provide a professional conclusion in one short paragraph.
+Provide a professional closing summary.
+
+Explain:
+
+• Overall solution value.
+
+• Integration quality.
+
+• Business contribution.
+
+Write one well-structured paragraph.
 
 ===========================================================
-PARSED INTERFACE
+WRITING STYLE
 ===========================================================
+
+Follow these writing principles throughout the document.
+
+• Write like an experienced SAP Integration Architect.
+
+• Maintain a professional consulting tone.
+
+• Avoid repetitive explanations.
+
+• Ensure every section contributes unique information.
+
+• Prefer complete paragraphs over isolated sentences.
+
+• Use bullet points where they improve readability.
+
+• Do not include placeholder text.
+
+• Do not mention missing information unless absolutely necessary.
+
+• Never mention AI, LLMs, prompts, or generated content.
+
+• The document should be suitable for customer delivery.
+
+===========================================================
+QUALITY CHECKS
+===========================================================
+
+Before generating the response, ensure that:
+
+✓ Every section contains meaningful content.
+
+✓ Purpose, Scope and Business Context are distinct.
+
+✓ Solution Summary and Architecture Overview are not duplicates.
+
+✓ Recommendations are practical and actionable.
+
+✓ Business Benefits focus on business value rather than technical implementation.
+
+✓ Process Flow follows the execution sequence of the integration.
+
+✓ All output is valid JSON.
+
+===========================================================
+PARSED INTERFACE CONTEXT
+===========================================================
+
+The following JSON represents the parsed SAP Integration Suite
+interface.
+
+Use it as the primary source of truth.
+
+Reasonable technical inference is allowed according to the
+Inference Policy defined above.
 
 {json.dumps(context, indent=2)}
 
-"""
-    
+===========================================================
+FINAL INSTRUCTIONS
+===========================================================
+
+Generate exactly one JSON object.
+
+Do not wrap the response in Markdown.
+
+Do not include explanations.
+
+Do not include comments.
+
+Do not include headings outside the JSON.
+
+Return only the JSON object.
+""" 
     # =====================================================
     # Parse AI Response
     # =====================================================

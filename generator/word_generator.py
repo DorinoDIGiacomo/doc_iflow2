@@ -5,7 +5,10 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from generator.sections.cover import add_cover
 from generator.sections.header import add_header
 from generator.sections.footer import add_footer
-# from generator.sections.document_control import add_document_control
+from generator.sections.document_control import add_document_control
+from generator.sections.table_of_contents import add_table_of_contents
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 
 # ==========================================================
 # Helper Functions
@@ -66,7 +69,7 @@ def add_subtitle(document, text):
 def add_text(document, text):
 
     if not text:
-        return
+        text = "Not Available"
 
     paragraph = document.add_paragraph()
 
@@ -83,6 +86,7 @@ def add_text(document, text):
 def add_bullet_list(document, items):
 
     if not items:
+        document.add_paragraph("Not Available")
         return
 
     for item in items:
@@ -185,6 +189,116 @@ def add_process_flow_image(document):
             "Figure: SAP CPI Integration Process Flow"
         ).alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
+from docx.shared import RGBColor
+
+def add_interface_summary(document, interface):
+
+    add_title(document, "Interface Summary")
+
+    table = document.add_table(rows=1, cols=2)
+    table.style = "Table Grid"
+
+    header = table.rows[0].cells
+    header[0].text = "Property"
+    header[1].text = "Value"
+
+    data = [
+    ("Interface Name", interface.name),
+    ("Description", interface.description),
+    ("Runtime Platform", interface.runtime),
+    ("Package", interface.package_name),
+    ("Artifact ID", interface.artifact_id),
+    ("Namespace", interface.namespace),
+
+    ("Sender System(s)",
+        ", ".join(interface.sender_systems)
+        if interface.sender_systems else "Not Available"),
+
+    ("Receiver System(s)",
+        ", ".join(interface.receiver_systems)
+        if interface.receiver_systems else "Not Available"),
+
+    ("External System(s)",
+        ", ".join(interface.external_systems)
+        if interface.external_systems else "Not Available"),
+
+    ("Endpoints",
+        ", ".join(interface.endpoints)
+        if interface.endpoints else "Not Available"),
+
+    ("Sender Adapter(s)",
+        ", ".join(interface.sender_adapters)
+        if interface.sender_adapters else "Not Available"),
+
+    ("Receiver Adapter(s)",
+        ", ".join(interface.receiver_adapters)
+        if interface.receiver_adapters else "Not Available"),
+
+    ("Communication Protocol",
+        ", ".join(interface.protocols)
+        if interface.protocols else "Not Available"),
+
+    ("Message Format",
+        ", ".join(interface.message_formats)
+        if interface.message_formats else "Not Available"),
+
+    ("Authentication",
+        ", ".join(interface.authentication)
+        if interface.authentication else "Not Available")
+]
+
+    for key, value in data:
+
+        if not value or str(value).strip() == "" or value == "Not Available":
+            continue
+
+        row = table.add_row().cells
+        row[0].text = key
+        row[1].text = str(value)
+
+    document.add_page_break()
+    
+def add_system_landscape(document, interface):
+
+    add_title(document, "System Landscape")
+
+    source = ", ".join(interface.sender_systems) if interface.sender_systems else "Source System"
+    target = ", ".join(interface.receiver_systems) if interface.receiver_systems else "Target System"
+
+    def draw_box(text):
+        table = document.add_table(rows=1, cols=1)
+        table.style = "Table Grid"
+
+        cell = table.cell(0, 0)
+        p = cell.paragraphs[0]
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+
+        run = p.add_run(text)
+        run.bold = True
+        run.font.name = "Cambria"
+        run.font.size = Pt(11)
+
+    # Source
+    draw_box(f"Source System\n{source}")
+
+    p = document.add_paragraph()
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    p.add_run("│")
+    p.add_run("\n▼")
+
+    # CPI
+    draw_box("SAP Integration Suite\nCloud Integration")
+
+    p = document.add_paragraph()
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    p.add_run("│")
+    p.add_run("\n▼")
+
+    # Receiver
+    draw_box(f"Receiver System\n{target}")
+
+    document.add_paragraph()   
+
 # ==========================================================
 # AI Generated Sections
 # ==========================================================
@@ -283,7 +397,7 @@ def add_ai_sections(document, ai_data):
     add_process_steps(
         document,
         ai_data.get(
-        "process_description",
+        "process_flow",
         []
         )
     )
@@ -423,8 +537,25 @@ def add_ai_sections(document, ai_data):
             "conclusion",
             ""
         )
-    ) 
+    )
 
+# ==========================================================
+# Auto Update Fields
+# ==========================================================
+    
+def enable_auto_update_fields(document):
+    """
+    Instruct Microsoft Word to update all fields (TOC, page numbers, etc.)
+    when the document is opened.
+    """
+
+    settings = document.settings.element
+
+    update_fields = OxmlElement("w:updateFields")
+    update_fields.set(qn("w:val"), "true")
+
+    settings.append(update_fields)
+ 
 # ==========================================================
 # Main Word Generator
 # ==========================================================
@@ -467,22 +598,36 @@ def generate_word(interface, output_path, ai_data=None):
         interface
     )
 
-    # ======================================================
-    # Document Control
-    # ======================================================
+    print("Generating Document Control...")
 
-    # print("Generating Document Control...")
+    add_document_control(
+        document,
+        interface
+    )
+    
+    print("Generating Table of Contents...")
+    
+    add_table_of_contents(
+        document
+    )
 
-    # add_document_control(
-    #     document,
-    #     interface
-    # )
+    print("Generating Interface Summary...")
 
-    # document.add_page_break()
+    add_interface_summary(
+        document,
+        interface
+    )
 
-    # ======================================================
-    # AI Generated Sections
-    # ======================================================
+    #print("Generating System Landscape...")
+
+    #add_system_landscape(
+        #document,
+        #interface
+    #)
+
+# ======================================================
+# AI Generated Sections
+# ======================================================
 
     print("Generating AI Documentation...")
 
@@ -490,14 +635,15 @@ def generate_word(interface, output_path, ai_data=None):
         document,
         ai_data
     )
-
-    document.add_page_break()
-
-    # ======================================================
-    # Save Document
-    # ======================================================
+    
+# ======================================================
+# Save Document
+# ======================================================
 
     print("Saving Solution Design Document...")
+
+    # Enable automatic field updates (TOC, page numbers, etc.)
+    enable_auto_update_fields(document)
 
     os.makedirs(
         os.path.dirname(output_path),

@@ -15,6 +15,8 @@ from ai.gemini_client import GeminiClient
 from ai.generate_document import DocumentGenerator
 from config import GEMINI_API_KEY, MODEL
 from generator.diagram_generator import generate_process_flow
+#from ai.generate_system_image import SystemLandscapeGenerator
+from parser.integration_parser import parse_integration
 
 def main():
 
@@ -72,6 +74,12 @@ def main():
     # ==========================================================
 
     parse_bpmn(root, interface)
+    
+    # ==========================================================
+    # Parse integration
+    # ==========================================================
+
+    parse_integration(root, interface)
 
     # ==========================================================
     # Parse Properties
@@ -114,12 +122,17 @@ def main():
         api_key=GEMINI_API_KEY,
         model=MODEL
     )
+    
+    #system_generator = SystemLandscapeGenerator(
+    #llm
+    #)   
 
     document_generator = DocumentGenerator(
         llm
     )
 
     ai_data = document_generator.generate(interface)
+    #system_image = system_generator.generate(interface)
 
     # print("\n========== AI DATA ==========\n")
     # print(ai_data)

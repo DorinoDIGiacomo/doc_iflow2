@@ -19,7 +19,7 @@ def add_document_control(document, interface):
     )
 
     table = document.add_table(
-        rows=8,
+        rows=13,
         cols=2
     )
 
@@ -27,7 +27,7 @@ def add_document_control(document, interface):
 
     data = [
 
-        ("Document Title", "SAP Integration Suite Solution Design Document"),
+        ("Document Title", "SAP Integration Suite Interface Design Document"),
 
         ("Interface Name", interface.name),
 
@@ -40,8 +40,18 @@ def add_document_control(document, interface):
         ("Generated On", datetime.now().strftime("%d-%m-%Y %H:%M")),
 
         ("Platform", "SAP Integration Suite (Cloud Integration)"),
-
-        ("Document Status", "Draft")
+        
+        ("Runtime", interface.runtime or "Cloud Integration"),
+        
+        ("Document Status", "Draft"),
+        
+        ("Classification", "Internal"),
+        
+        ("Package", interface.package_name or "Not Available"),
+        
+        ("Artifact ID", interface.artifact_id or "Not Available"),
+        
+        ("Namespace", interface.namespace or "Not Available")
 
     ]
 
@@ -85,9 +95,9 @@ def add_document_control(document, interface):
 
     revision.cell(1, 1).text = datetime.now().strftime("%d-%m-%Y")
 
-    revision.cell(1, 2).text = "AI SAP CPI Documentation Generator"
+    revision.cell(1, 2).text = "SAP CPI Interface Design Generator"
 
-    revision.cell(1, 3).text = "Initial Solution Design Document"
+    revision.cell(1, 3).text = "Initial Interface Design Document"
 
     revision.cell(1, 4).text = "Draft"
 

@@ -1,6 +1,6 @@
-import json
 import time
 import requests
+import os
 
 
 class GeminiClient:
@@ -14,9 +14,10 @@ class GeminiClient:
         self.api_key = api_key
         self.model = model
 
+        self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
+
         self.url = (
-            f"https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{model}:generateContent?key={api_key}"
+            f"{self.base_url}/{model}:generateContent?key={api_key}"
         )
 
         self.headers = {
@@ -159,10 +160,35 @@ class GeminiClient:
             time.sleep(5)
 
         return ""
+    
+    def generate_image(self, prompt, output_path):
 
-    # =====================================================
-    # Health Check
-    # =====================================================
+        print("\nGenerating AI Diagram using Pollinations...")
+
+        url = "https://image.pollinations.ai/prompt/" + requests.utils.quote(prompt)
+
+        response = requests.get(
+            url,
+            timeout=120
+        )
+
+        response.raise_for_status()
+
+        os.makedirs(
+            os.path.dirname(output_path),
+            exist_ok=True
+        )
+
+        with open(output_path, "wb") as f:
+            f.write(response.content)
+
+        print("Image saved:", output_path)
+
+        return output_path
+    
+# ====================================================
+# Health Check
+# =====================================================
 
     def test_connection(self):
 

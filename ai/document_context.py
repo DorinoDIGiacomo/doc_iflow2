@@ -154,7 +154,17 @@ def build_document_context(interface):
 
             "version": interface.version,
 
-            "description": interface.description
+            "description": interface.description,
+
+            "runtime": interface.runtime,
+
+            "package_name": interface.package_name,
+
+            "package_id": interface.package_id,
+
+            "artifact_id": interface.artifact_id,
+
+            "namespace": interface.namespace
 
         },
 
@@ -162,9 +172,23 @@ def build_document_context(interface):
 
             "pattern": integration_pattern,
 
-            "sender_systems": sorted(list(sender_systems)),
+            "sender_systems": interface.sender_systems,
 
-            "receiver_systems": sorted(list(receiver_systems))
+            "receiver_systems": interface.receiver_systems,
+
+            "external_systems": interface.external_systems,
+
+            "sender_adapters": interface.sender_adapters,
+
+            "receiver_adapters": interface.receiver_adapters,
+
+            "protocols": interface.protocols,
+
+            "authentication": interface.authentication,
+
+            "message_formats": interface.message_formats,
+
+            "endpoints": interface.endpoints
 
         },
 
@@ -203,6 +227,26 @@ def build_document_context(interface):
             "start_events": start_events,
 
             "end_events": end_events
+        
+        },
+            
+        "integration_summary": {
+
+            "total_components": len(interface.components),
+
+            "total_connections": len(interface.connections),
+
+            "total_sender_systems": len(interface.sender_systems),
+
+            "total_receiver_systems": len(interface.receiver_systems),
+
+            "total_sender_adapters": len(interface.sender_adapters),
+
+            "total_receiver_adapters": len(interface.receiver_adapters),
+
+            "total_protocols": len(interface.protocols),
+
+            "total_message_formats": len(interface.message_formats)
 
         },
 
