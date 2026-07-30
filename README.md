@@ -323,6 +323,6 @@ This project is licensed under the MIT License.
 
 ## Author
 
-**Sreevastav Cheekoti**
+**Srivastav Cheekoti**
 
 SAP Integration Suite | Cloud Integration | Python | AI-powered Documentation
