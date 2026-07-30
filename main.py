@@ -1,5 +1,4 @@
 from pathlib import Path
-from docx import document
 from parser.zip_reader import read_zip
 from parser.xml_reader import parse_iflow
 from parser.bpmn_parser import parse_bpmn
@@ -15,8 +14,8 @@ from ai.gemini_client import GeminiClient
 from ai.generate_document import DocumentGenerator
 from config import GEMINI_API_KEY, MODEL
 from generator.diagram_generator import generate_process_flow
-#from ai.generate_system_image import SystemLandscapeGenerator
 from parser.integration_parser import parse_integration
+from ai.generate_process_explanation import generate_process_explanations
 
 def main():
 
@@ -41,33 +40,14 @@ def main():
     print("\nInterface Name :", interface.name)
 
     # ==========================================================
-    # Interface Summary
-    # ==========================================================
-
-    # print("\n========== Interface Summary ==========\n")
-
-    # print("iFlow XML       :", interface.iflow_xml != "")
-    # print("Groovy Scripts  :", len(interface.resources["groovy"]))
-    # print("Mappings        :", len(interface.resources["mapping"]))
-    # print("XSD Files       :", len(interface.resources["xsd"]))
-    # print("WSDL Files      :", len(interface.resources["wsdl"]))
-    # print("EDMX Files      :", len(interface.resources["edmx"]))
-    # print("Properties      :", len(interface.resources["properties"]))
-    # print("Other Files     :", len(interface.resources["other"]))
-
-    # ==========================================================
     # Parse XML
     # ==========================================================
-
-    # print("\n========== XML Parser ==========\n")
 
     root = parse_iflow(interface)
 
     parse_metadata(root, interface)
 
     parse_flows(root, interface)
-
-    # print("XML Loaded Successfully")
 
     # ==========================================================
     # Parse BPMN
@@ -86,7 +66,7 @@ def main():
     # ==========================================================
 
     parse_properties(root, interface)
-
+    
     # ==========================================================
     # Analyze Interface
     # ==========================================================
@@ -96,6 +76,33 @@ def main():
     analyze_adapters(interface)
 
     analyze_connections(interface)
+ 
+    # ==========================================================
+    # AI Documentation
+    # ==========================================================
+
+    llm = GeminiClient(
+        api_key=GEMINI_API_KEY,
+        model=MODEL
+    )
+    
+    #system_generator = SystemLandscapeGenerator(
+    #llm
+    #)   
+
+    document_generator = DocumentGenerator(
+        llm
+    )
+
+    ai_data = document_generator.generate(interface)
+    
+    # ==========================================================
+    # AI Process Explanation
+    # ==========================================================
+
+    interface.process_steps = generate_process_explanations(interface, llm)
+    
+    print(f"\nGenerated {len(interface.process_steps)} business process steps.")  
 
     # ==========================================================
     # Export JSON
@@ -113,31 +120,6 @@ def main():
     )
 
     # ==========================================================
-    # AI Documentation
-    # ==========================================================
-
-    # print("\n========== AI Documentation ==========\n")
-
-    llm = GeminiClient(
-        api_key=GEMINI_API_KEY,
-        model=MODEL
-    )
-    
-    #system_generator = SystemLandscapeGenerator(
-    #llm
-    #)   
-
-    document_generator = DocumentGenerator(
-        llm
-    )
-
-    ai_data = document_generator.generate(interface)
-    #system_image = system_generator.generate(interface)
-
-    # print("\n========== AI DATA ==========\n")
-    # print(ai_data)
-
-    # ==========================================================
     # Generate Word Document
     # ==========================================================
 
@@ -146,15 +128,6 @@ def main():
         output_path="output/SAP_CPI_Solution_Design_Document.docx",
         ai_data=ai_data
     )
-
-    # ==========================================================
-    # Final Statistics
-    # ==========================================================
-
-    # print("\n========== Final Statistics ==========\n")
-
-    # print("Total Components  :", len(interface.components))
-    # print("Total Connections :", len(interface.connections))
 
     print("\nCompleted Successfully.")
 

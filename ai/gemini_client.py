@@ -17,7 +17,7 @@ class GeminiClient:
         self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
 
         self.url = (
-            f"{self.base_url}/{model}:generateContent?key={api_key}"
+            f"{self.base_url}/{model}:generateContent?key={self.api_key}"
         )
 
         self.headers = {
@@ -130,16 +130,10 @@ class GeminiClient:
                         ""
                     )
 
-                print("\nGemini API Error")
-
                 print(
-                    "Status:",
-                    response.status_code
+                    f"\nGemini API Error ({response.status_code})"
                 )
-
-                print(
-                    response.text
-                )
+                print(response.text)
 
             except requests.Timeout:
 
@@ -155,7 +149,7 @@ class GeminiClient:
 
             except Exception as ex:
 
-                print(ex)
+                print(f"Unexpected Gemini error: {ex}")
 
             time.sleep(5)
 
@@ -186,24 +180,3 @@ class GeminiClient:
 
         return output_path
     
-# ====================================================
-# Health Check
-# =====================================================
-
-    def test_connection(self):
-
-        print("\nTesting Gemini Connection...")
-
-        result = self.generate(
-            'Return ONLY {"status":"ok"}'
-        )
-
-        if result:
-
-            print("Gemini Connected Successfully.")
-
-            return True
-
-        print("Gemini Connection Failed.")
-
-        return False

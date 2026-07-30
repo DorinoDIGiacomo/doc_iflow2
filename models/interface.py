@@ -34,6 +34,11 @@ class Interface:
     # Process Flow
     # ==========================================================
     connections: list = field(default_factory=list)
+    
+    # ==========================================================
+    # AI Process Explanation
+    # ==========================================================
+    process_steps: list = field(default_factory=list)
 
     # ==========================================================
     # Adapter Information

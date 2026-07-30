@@ -16,8 +16,6 @@ class DocumentGenerator:
 
     def generate(self, interface):
 
-        # print("\n========== AI Documentation ==========\n")
-
         # Build structured context
         context = build_document_context(interface)
 
@@ -205,6 +203,7 @@ Return EXACTLY one JSON object using the following schema.
     "business_context": "",
     "business_challenges": [],
     "solution_summary": "",
+    "process_overview": "",
     "architecture_overview": "",
     "process_flow": [],
     "security_design": "",
@@ -305,6 +304,27 @@ Explain:
 • Overall design philosophy
 
 Write 2–3 paragraphs.
+
+-----------------------------------------------------------
+
+PROCESS OVERVIEW
+
+Provide a high-level narrative of the end-to-end execution flow.
+
+Describe:
+• Where the integration starts.
+• Major transformation stages.
+• Message processing.
+• External system interactions.
+• Response handling.
+• Exception handling if present.
+• How the integration completes.
+
+Write 1–2 professional paragraphs.
+
+Do not describe every CPI component individually.
+
+Focus on the overall execution of the interface from start to finish.
 
 -----------------------------------------------------------
 
@@ -689,6 +709,8 @@ Return only the JSON object.
             "business_challenges": [],
 
             "solution_summary": "Not Available",
+            
+            "process_overview": "Not Available",
 
             "architecture_overview": "Not Available",
 

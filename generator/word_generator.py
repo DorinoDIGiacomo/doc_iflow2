@@ -182,12 +182,8 @@ def add_process_flow_image(document):
 
         document.add_picture(
             image_path,
-            width=Inches(7)
+            width=Inches(6)
         )
-
-        document.add_paragraph(
-            "Figure: SAP CPI Integration Process Flow"
-        ).alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
 from docx.shared import RGBColor
 
@@ -359,10 +355,28 @@ def add_ai_sections(document, ai_data):
 
     add_title(document, "4. Proposed Solution")
 
+    add_subtitle(
+        document,
+        "4.1 Solution Summary"
+    )
+    
     add_text(
         document,
         ai_data.get(
             "solution_summary",
+            ""
+        )
+    )
+    
+    add_subtitle(
+        document,
+        "4.2 Process Overview"
+    )
+
+    add_text(
+        document,
+        ai_data.get(
+            "process_overview",
             ""
         )
     )
@@ -380,18 +394,26 @@ def add_ai_sections(document, ai_data):
             ""
         )
     )
+    
+    document.add_page_break()
 
     # ======================================================
-    # 6. End-to-End Integration Flow
+    # 6. Process Flow Diagram
     # ======================================================
     
-    add_title(
-        document,
-        "6. End-to-End Integration Flow"
-    )
-
     add_process_flow_image(
     document
+    )
+    
+    document.add_page_break()
+
+    # ======================================================
+    # 7. End-to-End Integration Flow
+    # ======================================================
+
+    add_title(
+        document,
+        "7. End-to-End Integration Flow"
     )
 
     add_process_steps(
@@ -403,12 +425,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 7. Security Design
+    # 8. Security Design
     # ======================================================
     
     add_title(
         document,
-        "7. Security Design"
+        "8. Security Design"
     )
 
     add_text(
@@ -420,17 +442,17 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 8. Monitoring & Error Handling
+    # 9. Monitoring & Error Handling
     # ======================================================
 
     add_title(
         document,
-        "8. Monitoring & Error Handling"
+        "9. Monitoring & Error Handling"
     )
 
     add_subtitle(
         document,
-        "8.1 Monitoring"
+        "9.1 Monitoring"
     )
 
     add_text(
@@ -443,7 +465,7 @@ def add_ai_sections(document, ai_data):
 
     add_subtitle(
         document,
-        "8.2 Error Handling"
+        "9.2 Error Handling"
     )
 
     add_text(
@@ -455,12 +477,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 9. Business Benefits
+    # 10. Business Benefits
     # ======================================================
 
     add_title(
         document,
-        "9. Business Benefits"
+        "10. Business Benefits"
     )
 
     add_bullet_list(
@@ -472,12 +494,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 10. Assumptions
+    # 11. Assumptions
     # ======================================================
 
     add_title(
         document,
-        "10. Assumptions"
+        "11. Assumptions"
     )
 
     add_bullet_list(
@@ -489,12 +511,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 11. Limitations
+    # 12. Limitations
     # ======================================================
 
     add_title(
         document,
-        "11. Limitations"
+        "12. Limitations"
     )
 
     add_bullet_list(
@@ -506,12 +528,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 12. Recommendations
+    # 13. Recommendations
     # ======================================================
 
     add_title(
         document,
-        "12. Recommendations"
+        "13. Recommendations"
     )
 
     add_bullet_list(
@@ -523,12 +545,12 @@ def add_ai_sections(document, ai_data):
     )
 
     # ======================================================
-    # 13. Conclusion
+    # 14. Conclusion
     # ======================================================
 
     add_title(
         document,
-        "13. Conclusion"
+        "14. Conclusion"
     )
 
     add_text(
