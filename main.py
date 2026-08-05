@@ -15,7 +15,6 @@ from ai.generate_document import DocumentGenerator
 from config import GEMINI_API_KEY, MODEL
 from generator.diagram_generator import generate_process_flow
 from parser.integration_parser import parse_integration
-from ai.generate_process_explanation import generate_process_explanations
 
 def main():
 
@@ -97,11 +96,26 @@ def main():
     ai_data = document_generator.generate(interface)
     
     # ==========================================================
-    # AI Process Explanation
+    # Process Steps (From AI Document Response)
     # ==========================================================
 
-    interface.process_steps = generate_process_explanations(interface, llm)
-    
+    from models.process_explanation import ProcessExplanation
+
+    interface.process_steps = []
+
+    for index, step in enumerate(ai_data.get("process_flow", []), start=1):
+
+        interface.process_steps.append(
+            ProcessExplanation(
+                step_number=index,
+                component_type="Business Step",
+                component_name=step.get("title", ""),
+                title=step.get("title", ""),
+                description=step.get("description", ""),
+                icon="process"
+            )
+        )
+
     print(f"\nGenerated {len(interface.process_steps)} business process steps.")  
 
     # ==========================================================

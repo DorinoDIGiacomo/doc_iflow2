@@ -69,7 +69,20 @@ Rules:
 
 Rules:
 
-1. Generate ONLY 6 to 10 sequential business process steps.
+1. Generate between 6 and 10 sequential business process steps.
+
+The process steps will be used for BOTH:
+
+• The End-to-End Integration Flow section of the document.
+• The automatically generated process flow diagram.
+
+Therefore:
+
+- Titles must be concise (3–6 words).
+- Titles must describe business activities.
+- Titles must not mention CPI components.
+- Descriptions should explain why the step exists and its business outcome.
+- Ensure the sequence accurately reflects the parsed integration.
 
 2. DO NOT create one step for every SAP CPI component.
 

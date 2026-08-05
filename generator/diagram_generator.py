@@ -1,13 +1,30 @@
 import os
-from models import interface
 import textwrap
+from models import interface
+from graphviz import Digraph
+from generator.process_description_formatter import create_process_summary
 
 os.environ["PATH"] += os.pathsep + r"C:\Program Files (x86)\Graphviz\bin"
 
-from graphviz import Digraph
+def shorten_description(text, max_words=18):
+    """
+    Shortens a paragraph for use inside the process flow diagram.
+    """
 
+    if not text:
+        return ""
 
-def generate_process_flow(interface, output_file):
+    # Remove line breaks
+    text = text.replace("\n", " ").strip()
+
+    words = text.split()
+
+    if len(words) <= max_words:
+        return text
+
+    return " ".join(words[:max_words]) + "..."
+
+def _generate_single_process_flow(interface, output_file, steps, first_page=False, last_page=False):
 
     print("\n========== Diagram Generator ==========\n")
 
@@ -17,9 +34,9 @@ def generate_process_flow(interface, output_file):
         rankdir="TB",
         bgcolor="white",
         splines="ortho",
-        nodesep="0.15",
-        ranksep="0.20",
-        pad="0.10",
+        nodesep="0.05",
+        ranksep="0.08",
+        pad="0.03",
         dpi="600",
         size="8.5,11",
         ratio="compress",
@@ -118,48 +135,43 @@ def generate_process_flow(interface, output_file):
 
         c.attr(rankdir="TB")
 
-        if hasattr(interface, "process_steps") and interface.process_steps:
+        if steps:
 
-            for index, step in enumerate(interface.process_steps, start=1):
+            for local_index, step in enumerate(steps, start=1):
 
                 if isinstance(step, dict):
-                    title = step.get("title", f"Step {index}")
+                    global_index = step.get("step_number", local_index)
+
+                    title = step.get("title", f"Step {global_index}")
                     overview = step.get("description", "")
                 else:
-                    title = getattr(step, "title", f"Step {index}")
+                    title = getattr(step, "title", f"Step {global_index}")
                     overview = getattr(step, "description", "")
 
-                # Keep overview short
+                # Convert long description into diagram bullet points
                 if overview:
-                    overview = overview.replace("<", "").replace(">", "")
-                    overview = "<BR ALIGN='CENTER'/>".join(
-                        textwrap.wrap(
-                            overview,
-                            width=50,
-                            break_long_words=False,
-                            break_on_hyphens=False,
-                        )
-                    )
+
+                    bullets = create_process_summary(overview)
+
+                    overview = ""
+
+                    for bullet in bullets:
+                        bullet = bullet.replace("<", "").replace(">", "")
+                        overview += f"• {bullet}<BR ALIGN='LEFT'/>"
+
+                    overview = overview.rstrip("<BR ALIGN='LEFT'/>")
 
                     label = f"""<
 <TABLE BORDER="0"
        CELLBORDER="0"
-       CELLPADDING="2"
+       CELLPADDING="0"
        CELLSPACING="0"
-       WIDTH="370">
+       WIDTH="320">
 
     <TR>
-        <TD ALIGN="CENTER" BALIGN="CENTER" VALIGN="MIDDLE">
-            <FONT POINT-SIZE="14">
-                <B>{index}. {title}</B>
-            </FONT>
-        </TD>
-    </TR>
-
-    <TR>
-        <TD ALIGN="CENTER" BALIGN="CENTER" VALIGN="MIDDLE">
-            <FONT POINT-SIZE="12">
-                {overview}
+        <TD ALIGN="CENTER" BALIGN="CENTER" VALIGN="MIDDLE" CELLPADDING="1">
+            <FONT POINT-SIZE="13">
+                <B>{global_index}. {title}</B>
             </FONT>
         </TD>
     </TR>
@@ -177,7 +189,7 @@ def generate_process_flow(interface, output_file):
     <TR>
         <TD ALIGN="CENTER" BALIGN="CENTER" VALIGN="MIDDLE">
             <FONT POINT-SIZE="15">
-                <B>{index}. {title}</B>
+                <B>{global_index}. {title}</B>
             </FONT>
         </TD>
     </TR>
@@ -186,18 +198,18 @@ def generate_process_flow(interface, output_file):
 >"""
 
                 c.node(
-                    f"STEP_{index}",
+                    f"STEP_{local_index}",
                     label,
                     fillcolor="#F8FBFF",
                     color="#7FA6D9",
                     penwidth="1.4",
-                    margin="0.00",
+                    margin="0.02",
                 )
 
-                if index > 1:
+                if local_index > 1:
                     c.edge(
-                        f"STEP_{index-1}",
-                        f"STEP_{index}",
+                        f"STEP_{local_index-1}",
+                        f"STEP_{local_index}",
                         color="#6C8EBF",
                         penwidth="1.4",
                         arrowsize="0.9",
@@ -207,26 +219,61 @@ def generate_process_flow(interface, output_file):
     # Connect Source -> Flow -> Target
     # =====================================================
 
-    if hasattr(interface, "process_steps") and interface.process_steps:
+    if steps:
 
-        graph.edge(
-            "SOURCE",
-            "STEP_1",
-            minlen="1",
-            color="#6C8EBF",
-            penwidth="1.4",
-            arrowsize="0.9",
-        )
+        if first_page:
 
-        graph.edge(
-            f"STEP_{len(interface.process_steps)}",
-            "TARGET",
-            minlen="1",
-            color="#6C8EBF",
-            penwidth="1.4",
-            arrowsize="0.9",
-        )
+            graph.edge(
+                "SOURCE",
+                "STEP_1",
+                minlen="1",
+                color="#6C8EBF",
+                penwidth="1.4",
+                arrowsize="0.9",
+            )
+
+        if last_page:
+
+            graph.edge(
+                f"STEP_{len(steps)}",
+                "TARGET",
+                minlen="1",
+                color="#6C8EBF",
+                penwidth="1.4",
+                arrowsize="0.9",
+            )
 
     graph.render(output_file, cleanup=True)
 
     print(f"Diagram generated : {output_file}.png")
+
+def generate_process_flow(interface, output_file):
+    """
+    Generates a single process flow diagram containing all process steps.
+    """
+
+    if not hasattr(interface, "process_steps") or not interface.process_steps:
+        return
+
+    all_steps = []
+
+    for i, step in enumerate(interface.process_steps, start=1):
+
+        if isinstance(step, dict):
+            step["step_number"] = i
+            all_steps.append(step)
+
+        else:
+            all_steps.append({
+                "step_number": i,
+                "title": getattr(step, "title", f"Step {i}"),
+                "description": getattr(step, "description", "")
+            })
+
+    _generate_single_process_flow(
+        interface=interface,
+        output_file=output_file,
+        steps=all_steps,
+        first_page=True,
+        last_page=True
+    )

@@ -1,5 +1,5 @@
 import json
-
+from analyzer.interface_knowledge_builder import build_interface_knowledge
 
 def build_document_context(interface):
 
@@ -133,9 +133,15 @@ def build_document_context(interface):
         integration_pattern = "Asynchronous"
 
     # =====================================================
-    # Context
+    # Build Knowledge Model
     # =====================================================
 
+    knowledge = build_interface_knowledge(interface)
+
+    # =====================================================
+    # Context
+    # =====================================================
+    
     context = {
 
         "document": {
@@ -147,6 +153,8 @@ def build_document_context(interface):
         "version": interface.version
 
         },
+        
+        "knowledge": knowledge,
 
         "interface": {
 

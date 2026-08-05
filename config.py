@@ -1,3 +1,3 @@
-GEMINI_API_KEY = "AIzaSyBAJJF2aLIonFTxPdFDgZz6DlGJtCApNaY"
+GEMINI_API_KEY = "Your Gemini API Key Here"
 MODEL = "gemini-2.5-flash"
  

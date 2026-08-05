@@ -173,17 +173,17 @@ def add_numbered_process(document, steps):
             description
         )
 
-
 def add_process_flow_image(document):
 
     image_path = "output/process_flow.png"
 
-    if os.path.exists(image_path):
+    if not os.path.exists(image_path):
+        return
 
-        document.add_picture(
-            image_path,
-            width=Inches(6)
-        )
+    document.add_picture(
+        image_path,
+        width=Inches(6.3)
+    )
 
 from docx.shared import RGBColor
 

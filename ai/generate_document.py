@@ -39,6 +39,7 @@ class DocumentGenerator:
 
         interface = context.get("interface", {})
         document = context.get("document", {})
+        knowledge = context.get("knowledge", {})
 
         return f"""
 ===========================================================
@@ -137,6 +138,16 @@ Every paragraph should be specific to this interface.
 ===========================================================
 INFERENCE POLICY
 ===========================================================
+
+The supplied Knowledge Model has already been derived from the
+parsed metadata using deterministic analysis.
+
+Treat the Knowledge Model as the primary source of truth.
+
+Only consult the raw parsed interface context if additional
+technical details are required.
+
+Do not contradict the Knowledge Model.
 
 The parsed interface may not explicitly contain all business
 information.
@@ -580,6 +591,55 @@ Before generating the response, ensure that:
 ✓ Process Flow follows the execution sequence of the integration.
 
 ✓ All output is valid JSON.
+
+===========================================================
+KNOWLEDGE MODEL
+===========================================================
+
+The following Knowledge Model has already been derived from
+the parsed interface using deterministic analysis.
+
+Treat this as the PRIMARY source of truth when generating
+business documentation.
+
+Business Object:
+{knowledge.get("business_object")}
+
+Integration Pattern:
+{knowledge.get("integration_pattern")}
+
+Communication Type:
+{knowledge.get("communication_type")}
+
+Sender Systems:
+{json.dumps(knowledge.get("sender", []), indent=2)}
+
+Receiver Systems:
+{json.dumps(knowledge.get("receiver", []), indent=2)}
+
+Protocols:
+{json.dumps(knowledge.get("protocols", []), indent=2)}
+
+Message Formats:
+{json.dumps(knowledge.get("message_formats", []), indent=2)}
+
+Transformations:
+{json.dumps(knowledge.get("transformations", []), indent=2)}
+
+Routing:
+{knowledge.get("routing")}
+
+Split Processing:
+{knowledge.get("split_processing")}
+
+Aggregation:
+{knowledge.get("aggregation")}
+
+Request Reply:
+{knowledge.get("request_reply")}
+
+Exception Handling:
+{knowledge.get("exception_handling")}
 
 ===========================================================
 PARSED INTERFACE CONTEXT
